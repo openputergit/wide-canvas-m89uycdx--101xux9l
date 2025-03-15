@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gray-100 font-[Inter]">
+    <div class="min-h-screen">
+        <nav class="bg-teal-600 text-white p-4">
+            <div class="container mx-auto flex justify-between items-center">
+                <h1 class="text-xl font-bold">Student Management System</h1>
+                <div class="space-x-4">
+                    <button id="themeToggle" class="hover:text-gray-200">
+                        <i class="bi bi-moon-stars"></i>
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container mx-auto p-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Enquiry Software -->
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h2 class="text-xl font-semibold mb-4">Enquiry Management</h2>
+                    <form id="enquiryForm" class="space-y-4">
+                        <input type="text" placeholder="Student Name" class="w-full p-2 border rounded" required>
+                        <input type="email" placeholder="Email" class="w-full p-2 border rounded" required>
+                        <textarea placeholder="Enquiry Details" class="w-full p-2 border rounded" rows="3" required></textarea>
+                        <button type="submit" class="bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700">Submit Enquiry</button>
+                    </form>
+                </div>
+
+                <!-- MS-CIT Puzzle -->
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h2 class="text-xl font-semibold mb-4">MS-CIT Puzzle</h2>
+                    <div id="mscitPuzzle" class="grid grid-cols-3 gap-2 mb-4">
+                        <!-- Puzzle pieces will be inserted here by JavaScript -->
+                    </div>
+                    <button id="shuffleMscit" class="bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700">Shuffle</button>
+                </div>
+
+                <!-- To-Do List -->
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h2 class="text-xl font-semibold mb-4">Daily Tasks</h2>
+                    <div class="space-y-4">
+                        <div class="flex gap-2">
+                            <input type="text" id="todoInput" placeholder="Add new task" class="flex-1 p-2 border rounded">
+                            <button id="addTodo" class="bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700">Add</button>
+                        </div>
+                        <ul id="todoList" class="space-y-2"></ul>
+                    </div>
+                </div>
+
+                <!-- HSC Puzzle -->
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h2 class="text-xl font-semibold mb-4">HSC Subject Puzzle</h2>
+                    <div id="hscPuzzle" class="grid grid-cols-3 gap-2 mb-4">
+                        <!-- Puzzle pieces will be inserted here by JavaScript -->
+                    </div>
+                    <button id="shuffleHsc" class="bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700">Shuffle</button>
+                </div>
+
+                <!-- Attendance Software -->
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h2 class="text-xl font-semibold mb-4">Attendance System</h2>
+                    <div class="space-y-4">
+                        <div class="flex gap-2 mb-4">
+                            <input type="text" id="studentName" placeholder="Student Name" class="flex-1 p-2 border rounded">
+                            <button id="addStudent" class="bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700">Add</button>
+                        </div>
+                        <div id="attendanceList" class="space-y-2"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Enquiry Form Handler
+        document.getElementById('enquiryForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Enquiry submitted successfully!');
+            this.reset();
+        });
+
+        // To-Do List functionality
+        const todoInput = document.getElementById('todoInput');
+        const todoList = document.getElementById('todoList');
+        const addTodo = document.getElementById('addTodo');
+
+        addTodo.addEventListener('click', () => {
+            if (todoInput.value.trim()) {
+                const li = document.createElement('li');
+                li.className = 'flex justify-between items-center p-2 bg-gray-50 rounded';
+                li.innerHTML = `
+                    <span>${todoInput.value}</span>
+                    <button class="text-red-500 hover:text-red-700"><i class="bi bi-trash"></i></button>
+                `;
+                li.querySelector('button').addEventListener('click', () => li.remove());
+                todoList.appendChild(li);
+                todoInput.value = '';
+            }
+        });
+
+        // Puzzle functionality (MS-CIT)
+        const mscitPuzzle = document.getElementById('mscitPuzzle');
+        const mscitPieces = ['MS Office', 'Internet', 'Tally', 'Email', 'Excel', 'Word', 'PowerPoint', 'Access', 'Digital'];
+        
+        function createPuzzle(container, pieces) {
+            container.innerHTML = '';
+            pieces.forEach(piece => {
+                const div = document.createElement('div');
+                div.className = 'bg-teal-100 p-2 text-center rounded cursor-move';
+                div.draggable = true;
+                div.textContent = piece;
+                container.appendChild(div);
+            });
+        }
+
+        createPuzzle(mscitPuzzle, mscitPieces);
+        document.getElementById('shuffleMscit').addEventListener('click', () => {
+            const shuffled = [...mscitPieces].sort(() => Math.random() - 0.5);
+            createPuzzle(mscitPuzzle, shuffled);
+        });
+
+        // HSC Puzzle
+        const hscPuzzle = document.getElementById('hscPuzzle');
+        const hscPieces = ['Physics', 'Chemistry', 'Math', 'Biology', 'English', 'Hindi', 'History', 'Geography', 'Economics'];
+        
+        createPuzzle(hscPuzzle, hscPieces);
+        document.getElementById('shuffleHsc').addEventListener('click', () => {
+            const shuffled = [...hscPieces].sort(() => Math.random() - 0.5);
+            createPuzzle(hscPuzzle, shuffled);
+        });
+
+        // Attendance System
+        const studentName = document.getElementById('studentName');
+        const attendanceList = document.getElementById('attendanceList');
+        const addStudent = document.getElementById('addStudent');
+
+        addStudent.addEventListener('click', () => {
+            if (studentName.value.trim()) {
+                const div = document.createElement('div');
+                div.className = 'flex justify-between items-center p-2 bg-gray-50 rounded';
+                const date = new Date().toLocaleDateString();
+                div.innerHTML = `
+                    <span>${studentName.value}</span>
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm text-gray-500">${date}</span>
+                        <button class="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600">Present</button>
+                        <button class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">Absent</button>
+                    </div>
+                `;
+                attendanceList.appendChild(div);
+                studentName.value = '';
+            }
+        });
+
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        let isDark = false;
+
+        themeToggle.addEventListener('click', () => {
+            isDark = !isDark;
+            document.body.classList.toggle('bg-gray-900');
+            document.querySelectorAll('.bg-white').forEach(el => {
+                el.classList.toggle('bg-gray-800');
+                el.classList.toggle('text-white');
+            });
+            themeToggle.innerHTML = isDark ? '<i class="bi bi-sun"></i>' : '<i class="bi bi-moon-stars"></i>';
+        });
+    </script>
+<script>document.body.addEventListener('wheel', e => { if (!e.ctrlKey) return; e.preventDefault(); return }, { passive: false })</script>
+	</body>
+</html>
